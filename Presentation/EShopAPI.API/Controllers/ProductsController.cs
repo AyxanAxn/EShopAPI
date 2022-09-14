@@ -1,5 +1,6 @@
 ﻿using EShopAPI.Appilication.IRepositories;
 using EShopAPI.Appilication.RequestParameters;
+using EShopAPI.Appilication.Services;
 using EShopAPI.Appilication.ViewModels;
 using EShopAPI.Domain.Entities;
 using Microsoft.AspNetCore.Http;
@@ -14,15 +15,19 @@ namespace EShopAPI.API.Controllers
     {
         readonly private IProductWriteRepository _productWriteRepository;
         readonly private IProductReadRepository _productReadRepository;
-
-
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IFileService _fileService;
         public ProductsController(
 
             IProductWriteRepository productWriteRepository,
-            IProductReadRepository productReadRepository)
+            IProductReadRepository productReadRepository,
+            IWebHostEnvironment webHostEnvironment,
+            IFileService fileService)
         {
-            _productWriteRepository = productWriteRepository;
-            _productReadRepository = productReadRepository;
+            this._productWriteRepository = productWriteRepository;
+            this._productReadRepository = productReadRepository;
+            this._webHostEnvironment = webHostEnvironment;
+            this._fileService= fileService;
         }
 
         [HttpGet]
@@ -82,6 +87,14 @@ namespace EShopAPI.API.Controllers
             await _productWriteRepository.RemoveAsync(id);
             await _productWriteRepository.SaveAsync();
             return Ok();
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Upload() 
+        {
+            await _fileService.UploadAsync("resourse/product-images", Request.Form.Files);
+    
+            return Ok();   
         }
     }
 }

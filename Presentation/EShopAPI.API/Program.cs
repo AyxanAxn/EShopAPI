@@ -1,5 +1,6 @@
 
 using EShopAPI.Appilication.Validators.Products;
+using EShopAPI.Infrastructure;
 using EShopAPI.Infrastructure.Filters;
 using EShopAPI.Persistance;
 using FluentValidation.AspNetCore;
@@ -8,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddPersistanceServices();
+builder.Services.AddInfrastructureServices();
 
 builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
@@ -27,7 +29,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -35,7 +36,10 @@ if (app.Environment.IsDevelopment())
 }
 app.UseCors();
 
+
 app.UseHttpsRedirection();
+
+app.UseStaticFiles();
 
 app.UseAuthorization();
 
