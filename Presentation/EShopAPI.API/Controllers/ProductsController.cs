@@ -17,24 +17,44 @@ namespace EShopAPI.API.Controllers
         readonly private IProductReadRepository _productReadRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IFileService _fileService;
+        private readonly IFileReadRepository _fileRead;
+        private readonly IFileWriteRepository _fileWrite;
+        private readonly IProductImageFileReadRepository _productImageRead;
+        private readonly IProductImageFileWriteRepository _productImageWrite;
+        private readonly IInvoiceFileReadRepository _invoiceRead;
+        private readonly IInvoiceFileWriteRepository _invoiceWrite;
+
+
         public ProductsController(
 
             IProductWriteRepository productWriteRepository,
             IProductReadRepository productReadRepository,
             IWebHostEnvironment webHostEnvironment,
-            IFileService fileService)
+            IFileService fileService,
+            IFileReadRepository fileRead,
+            IFileWriteRepository fileWrite,
+            IProductImageFileReadRepository productImageRead,
+            IProductImageFileWriteRepository productImageWrite,
+            IInvoiceFileReadRepository invoiceRead,
+            IInvoiceFileWriteRepository invoiceWrite)
         {
             this._productWriteRepository = productWriteRepository;
             this._productReadRepository = productReadRepository;
             this._webHostEnvironment = webHostEnvironment;
-            this._fileService= fileService;
+            this._fileService = fileService;
+            this._fileRead = fileRead;
+            this._fileWrite = fileWrite;
+            this._productImageRead = productImageRead;
+            this._productImageWrite = productImageWrite;
+            this._invoiceRead = invoiceRead;
+            this._invoiceWrite = invoiceWrite;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] Pagination pagination)
         {
             var totalProductCount = _productReadRepository.GetAll(false).Count();
-            var products= _productReadRepository.GetAll(false).Select(p => new
+            var products = _productReadRepository.GetAll(false).Select(p => new
             {
                 p.Id,
                 p.Name,
@@ -44,7 +64,8 @@ namespace EShopAPI.API.Controllers
                 p.UpdatedDate
             }).Skip(pagination.Page * pagination.Size).Take(pagination.Size).ToList();
 
-            return Ok(new {
+            return Ok(new
+            {
                 totalProductCount,
                 products
             });
@@ -90,11 +111,56 @@ namespace EShopAPI.API.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> Upload() 
+        public async Task<IActionResult> Upload()
         {
-            await _fileService.UploadAsync("resourse/product-images", Request.Form.Files);
-    
-            return Ok();   
+            var datas = await _fileService.UploadAsync("resourse/product-images", Request.Form.Files);
+            //await _productImageWrite.AddRangeAsync(
+            //    datas.Select(
+            //        d=>new ProductImageFile() 
+            //        { 
+            //            FileName=d.fileName,
+            //            Path=d.path
+
+            //        }).ToList());
+            //await _productImageWrite.SaveAsync();
+
+
+
+
+
+            //await _invoiceWrite.AddRangeAsync(
+            //  datas.Select(
+            //      d => new InvoiceFile()
+            //      {
+            //          FileName = d.fileName,
+            //          Path = d.path,
+            //          Price = new Random().Next()
+
+            //      }).ToList()); ; ;
+            //await _productImageWrite.SaveAsync(); 
+
+
+
+
+
+            //await _fileWrite.AddRangeAsync(
+            //  datas.Select(
+            //      d => new EShopAPI.Domain.Entities.File()
+            //      {
+            //          FileName = d.fileName,
+            //          Path = d.path
+
+            //      }).ToList()); ; ;
+            //await _productImageWrite.SaveAsync();
+
+
+           
+
+            return Ok();
+            return Ok();
+            return Ok();
         }
+
+
     }
 }

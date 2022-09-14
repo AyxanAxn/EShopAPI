@@ -74,7 +74,7 @@ namespace EShopAPI.Infrastructure.Services
             foreach (IFormFile file in files)
             {
                 string fileNewName =await FileRenameAsync(uploadPath, file.Name);
-                bool result = await CopyFileAsync($"{uploadPath}\\{fileNewName}", file);
+                bool result = await CopyFileAsync($"{path}\\{fileNewName}", file);
                 datas.Add((fileNewName, $"{uploadPath}\\{fileNewName}"));
                 results.Add(result);
             }
