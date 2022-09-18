@@ -1,16 +1,22 @@
-
 using EShopAPI.Appilication.Validators.Products;
 using EShopAPI.Infrastructure;
+using EShopAPI.Infrastructure.Enums;
 using EShopAPI.Infrastructure.Filters;
+using EShopAPI.Infrastructure.Services.Storage.Azure;
+using EShopAPI.Infrastructure.Services.Storage.Local;
 using EShopAPI.Persistance;
 using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container.
 builder.Services.AddPersistanceServices();
 builder.Services.AddInfrastructureServices();
+//You can change your storae dynamicly from hire!
+builder.Services.AddStorage<LocalStorage>();
+//Heyyy
 
+//Cors policy
+#region Cors policy
 builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
         policy
@@ -18,13 +24,15 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod()
             .WithOrigins("http://localhost:4200", "https://localhost:4200")
 ));
-//add validation
+#endregion
+//Add VALIDATION!
+#region Validation
 builder.Services
     .AddControllers(options => options.Filters.Add<ValidationFilter>())
     .AddFluentValidation(configuration => configuration
     .RegisterValidatorsFromAssemblyContaining<CreateProductValidator>())
     .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
-
+#endregion
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -35,7 +43,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseCors();
-
 
 app.UseHttpsRedirection();
 

@@ -1,9 +1,8 @@
-﻿using EShopAPI.Appilication.IRepositories;
+﻿using EShopAPI.Appilication.Abstractions.Storage;
+using EShopAPI.Appilication.IRepositories;
 using EShopAPI.Appilication.RequestParameters;
-using EShopAPI.Appilication.Services;
 using EShopAPI.Appilication.ViewModels;
 using EShopAPI.Domain.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -16,38 +15,39 @@ namespace EShopAPI.API.Controllers
         readonly private IProductWriteRepository _productWriteRepository;
         readonly private IProductReadRepository _productReadRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IFileService _fileService;
         private readonly IFileReadRepository _fileRead;
         private readonly IFileWriteRepository _fileWrite;
         private readonly IProductImageFileReadRepository _productImageRead;
         private readonly IProductImageFileWriteRepository _productImageWrite;
         private readonly IInvoiceFileReadRepository _invoiceRead;
         private readonly IInvoiceFileWriteRepository _invoiceWrite;
+        readonly IStorageService _storageService;
 
-
+        
+        
         public ProductsController(
 
             IProductWriteRepository productWriteRepository,
             IProductReadRepository productReadRepository,
             IWebHostEnvironment webHostEnvironment,
-            IFileService fileService,
             IFileReadRepository fileRead,
             IFileWriteRepository fileWrite,
             IProductImageFileReadRepository productImageRead,
             IProductImageFileWriteRepository productImageWrite,
             IInvoiceFileReadRepository invoiceRead,
-            IInvoiceFileWriteRepository invoiceWrite)
+            IInvoiceFileWriteRepository invoiceWrite,
+            IStorageService storageService)
         {
             this._productWriteRepository = productWriteRepository;
             this._productReadRepository = productReadRepository;
             this._webHostEnvironment = webHostEnvironment;
-            this._fileService = fileService;
             this._fileRead = fileRead;
             this._fileWrite = fileWrite;
             this._productImageRead = productImageRead;
             this._productImageWrite = productImageWrite;
             this._invoiceRead = invoiceRead;
             this._invoiceWrite = invoiceWrite;
+            _storageService = storageService;
         }
 
         [HttpGet]
@@ -113,54 +113,18 @@ namespace EShopAPI.API.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Upload()
         {
-            var datas = await _fileService.UploadAsync("resourse/product-images", Request.Form.Files);
-            //await _productImageWrite.AddRangeAsync(
-            //    datas.Select(
-            //        d=>new ProductImageFile() 
-            //        { 
-            //            FileName=d.fileName,
-            //            Path=d.path
+            var datas=await _storageService.UploadAsync("files",Request.Form.Files);
 
-            //        }).ToList());
-            //await _productImageWrite.SaveAsync();
-
-
-
-
-
-            //await _invoiceWrite.AddRangeAsync(
-            //  datas.Select(
-            //      d => new InvoiceFile()
-            //      {
-            //          FileName = d.fileName,
-            //          Path = d.path,
-            //          Price = new Random().Next()
-
-            //      }).ToList()); ; ;
-            //await _productImageWrite.SaveAsync(); 
-
-
-
-
-
-            //await _fileWrite.AddRangeAsync(
-            //  datas.Select(
-            //      d => new EShopAPI.Domain.Entities.File()
-            //      {
-            //          FileName = d.fileName,
-            //          Path = d.path
-
-            //      }).ToList()); ; ;
-            //await _productImageWrite.SaveAsync();
-
-
-           
-
-            return Ok();
-            return Ok();
+            await _productImageWrite.AddRangeAsync(
+                datas.Select(
+                    d => new ProductImageFile()
+                    {
+                        FileName = d.fileName,
+                        Path = d.pathOrContainerName,
+                        Storage=_storageService.StorageName
+                    }).ToList());
+            var finalData=await _productImageWrite.SaveAsync();
             return Ok();
         }
-
-
     }
 }
