@@ -23,8 +23,8 @@ namespace EShopAPI.API.Controllers
         private readonly IInvoiceFileWriteRepository _invoiceWrite;
         readonly IStorageService _storageService;
 
-        
-        
+
+
         public ProductsController(
 
             IProductWriteRepository productWriteRepository,
@@ -111,19 +111,45 @@ namespace EShopAPI.API.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> Upload()
+        public async Task<IActionResult> Upload(string id)
         {
-            var datas=await _storageService.UploadAsync("files",Request.Form.Files);
+            List<(string fileName, string pathOrContainerName)> result = await _storageService.UploadAsync("photo-images", Request.Form.Files);
+            Product product= await _productReadRepository.FindByIdAsync(id);
 
-            await _productImageWrite.AddRangeAsync(
-                datas.Select(
-                    d => new ProductImageFile()
-                    {
-                        FileName = d.fileName,
-                        Path = d.pathOrContainerName,
-                        Storage=_storageService.StorageName
-                    }).ToList());
-            var finalData=await _productImageWrite.SaveAsync();
+
+            //The second version : 
+
+            //foreach (var r in result)
+            //{
+            //    product.ProductImageFiles.Add(new()
+            //    {
+            //        FileName = r.fileName,
+            //        Path = r.pathOrContainerName,
+            //        Storage = _storageService.StorageName,
+            //        Products = new List<Product>() { product }
+            //    });
+            //}
+                       
+            await _productImageWrite.AddRangeAsync(result.Select(r => new ProductImageFile
+            {
+                FileName = r.fileName,
+                Path = r.pathOrContainerName,
+                Storage = _storageService.StorageName,
+                Products = new List<Product>() { product }
+            }).ToList());
+
+            await _productImageWrite.SaveAsync();
+            //var datas=await _storageService.UploadAsync("files",Request.Form.Files);
+
+            //await _productImageWrite.AddRangeAsync(
+            //    datas.Select(
+            //        d => new ProductImageFile()
+            //        {
+            //            FileName = d.fileName,
+            //            Path = d.pathOrContainerName,
+            //            Storage=_storageService.StorageName
+            //        }).ToList());
+            //var finalData=await _productImageWrite.SaveAsync();
             return Ok();
         }
     }
