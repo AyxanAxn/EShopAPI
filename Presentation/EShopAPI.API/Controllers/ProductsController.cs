@@ -158,7 +158,7 @@ namespace EShopAPI.API.Controllers
             Product? product = await _productReadRepository.Table
                 .Include(p => p.ProductImageFiles)
                 .FirstOrDefaultAsync(p => p.Id == Guid.Parse(id));
-
+            await Task.Delay(2999);
             return Ok(product.ProductImageFiles.Select(p => new
             {
                 path = $"{_configuration["BaseStorageUrl"]}/{p.Path}",
