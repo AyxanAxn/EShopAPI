@@ -4,6 +4,7 @@ using EShopAPI.Appilication.RequestParameters;
 using EShopAPI.Appilication.ViewModels;
 using EShopAPI.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace EShopAPI.API.Controllers
@@ -22,8 +23,7 @@ namespace EShopAPI.API.Controllers
         private readonly IInvoiceFileReadRepository _invoiceRead;
         private readonly IInvoiceFileWriteRepository _invoiceWrite;
         readonly IStorageService _storageService;
-
-
+        readonly IConfiguration _configuration;
 
         public ProductsController(
 
@@ -36,7 +36,8 @@ namespace EShopAPI.API.Controllers
             IProductImageFileWriteRepository productImageWrite,
             IInvoiceFileReadRepository invoiceRead,
             IInvoiceFileWriteRepository invoiceWrite,
-            IStorageService storageService)
+            IStorageService storageService,
+            IConfiguration configuration)
         {
             this._productWriteRepository = productWriteRepository;
             this._productReadRepository = productReadRepository;
@@ -47,7 +48,8 @@ namespace EShopAPI.API.Controllers
             this._productImageWrite = productImageWrite;
             this._invoiceRead = invoiceRead;
             this._invoiceWrite = invoiceWrite;
-            _storageService = storageService;
+            this._storageService = storageService;
+            this._configuration = configuration;
         }
 
         [HttpGet]
@@ -91,7 +93,6 @@ namespace EShopAPI.API.Controllers
             }
             return BadRequest();
         }
-
         [HttpPut]
         public async Task<IActionResult> Put(VM_Update_Product model)
         {
@@ -109,12 +110,11 @@ namespace EShopAPI.API.Controllers
             await _productWriteRepository.SaveAsync();
             return Ok();
         }
-
         [HttpPost("[action]")]
         public async Task<IActionResult> Upload(string id)
         {
             List<(string fileName, string pathOrContainerName)> result = await _storageService.UploadAsync("photo-images", Request.Form.Files);
-            Product product= await _productReadRepository.FindByIdAsync(id);
+            Product product = await _productReadRepository.FindByIdAsync(id);
 
 
             //The second version : 
@@ -129,7 +129,7 @@ namespace EShopAPI.API.Controllers
             //        Products = new List<Product>() { product }
             //    });
             //}
-                       
+
             await _productImageWrite.AddRangeAsync(result.Select(r => new ProductImageFile
             {
                 FileName = r.fileName,
@@ -151,6 +151,19 @@ namespace EShopAPI.API.Controllers
             //        }).ToList());
             //var finalData=await _productImageWrite.SaveAsync();
             return Ok();
+        }
+        [HttpGet("[action]/{id}")]
+        public async Task<IActionResult> GetProductImages(string id)
+        {
+            Product? product = await _productReadRepository.Table
+                .Include(p => p.ProductImageFiles)
+                .FirstOrDefaultAsync(p => p.Id == Guid.Parse(id));
+
+            return Ok(product.ProductImageFiles.Select(p => new
+            {
+                path = $"{_configuration["BaseStorageUrl"]}/{p.Path}",
+                p.FileName
+            }));
         }
     }
 }
