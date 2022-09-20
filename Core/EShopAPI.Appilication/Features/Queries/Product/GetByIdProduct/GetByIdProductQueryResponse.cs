@@ -1,13 +1,12 @@
-﻿using MediatR;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EShopAPI.Appilication.Features.Commands.CreateProduct
+namespace EShopAPI.Appilication.Features.Queries.Product.GetByIdProduct
 {
-    public class CreateProductCommandRequest : IRequest<CraeteProductCommandResponse>
+    public class GetByIdProductQueryResponse
     {
         public string Name { get; set; }
         public int Stock { get; set; }

@@ -1,6 +1,8 @@
 ﻿using EShopAPI.Appilication.Abstractions.Storage;
-using EShopAPI.Appilication.Features.Commands.CreateProduct;
-using EShopAPI.Appilication.Features.Queries.GetAllProduct;
+using EShopAPI.Appilication.Features.Commands.Product.CreateProduct;
+using EShopAPI.Appilication.Features.Commands.Product.UpdateProduct;
+using EShopAPI.Appilication.Features.Queries.Product.GetAllProduct;
+using EShopAPI.Appilication.Features.Queries.Product.GetByIdProduct;
 using EShopAPI.Appilication.IRepositories;
 using EShopAPI.Appilication.RequestParameters;
 using EShopAPI.Appilication.ViewModels;
@@ -68,9 +70,10 @@ namespace EShopAPI.API.Controllers
             return Ok(response);  
         }
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id)
+        public async Task<IActionResult> Get([FromRoute] GetByIdProductQueryRequest getByIdProductQueryRequest)
         {
-            return Ok(await _productReadRepository.FindByIdAsync(id, false));
+            GetByIdProductQueryResponse response = await _mediator.Send(getByIdProductQueryRequest);
+            return Ok(response); 
         }
         [HttpPost]
         public async Task<IActionResult> Post(CreateProductCommandRequest createProductCommandRequest)
@@ -79,13 +82,9 @@ namespace EShopAPI.API.Controllers
             return StatusCode((int)HttpStatusCode.Created); 
         }
         [HttpPut]
-        public async Task<IActionResult> Put(VM_Update_Product model)
+        public async Task<IActionResult> Put([FromBody]UpdateProductCommandRequest updateProductCommandRequest)
         {
-            Product product = await _productReadRepository.FindByIdAsync(model.Id);
-            product.Name = model.Name;
-            product.Stock = model.Stock;
-            product.Price = model.Price;
-            await _productWriteRepository.SaveAsync();
+           
             return Ok();
         }
         [HttpDelete("{id}")]

@@ -2,7 +2,7 @@
 using MediatR;
 
 
-namespace EShopAPI.Appilication.Features.Commands.CreateProduct
+namespace EShopAPI.Appilication.Features.Commands.Product.CreateProduct
 {
     public class CraeteProductCommandHandler : IRequestHandler<CreateProductCommandRequest, CraeteProductCommandResponse>
     {

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EShopAPI.Appilication.Features.Commands.CreateProduct
+namespace EShopAPI.Appilication.Features.Commands.Product.UpdateProduct
 {
-    public class CraeteProductCommandResponse
+    public class UpdateProductCommandResponse
     {
     }
 }
