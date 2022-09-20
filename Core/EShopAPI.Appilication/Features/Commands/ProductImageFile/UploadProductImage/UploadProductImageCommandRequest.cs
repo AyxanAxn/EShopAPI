@@ -11,7 +11,7 @@ namespace EShopAPI.Appilication.Features.Commands.ProductImageFile.UploadProduct
     public class UploadProductImageCommandRequest:IRequest<UploadProductImageCommandResponse>
     {
         public string Id { get; set; }
-        //public IFormFileCollection MyProperty { get; set; }
+        public IFormFileCollection? Files { get; set; }
 
     }
 }
