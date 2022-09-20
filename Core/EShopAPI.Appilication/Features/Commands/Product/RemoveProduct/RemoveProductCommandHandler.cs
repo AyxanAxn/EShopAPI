@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using EShopAPI.Appilication.IRepositories;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,21 @@ namespace EShopAPI.Appilication.Features.Commands.Product.RemoveProduct
 {
     internal class RemoveProductCommandHandler : IRequestHandler<RemoveProductCommandRequest, RemoveProductCommandResponse>
     {
-        public Task<RemoveProductCommandResponse> Handle
+        readonly IProductWriteRepository _productWriteRepository;
+
+        public RemoveProductCommandHandler(IProductWriteRepository productWriteRepository)
+        {
+            _productWriteRepository = productWriteRepository;
+        }
+
+        public async Task<RemoveProductCommandResponse> Handle
             (RemoveProductCommandRequest request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+
+            await _productWriteRepository.RemoveAsync(request.Id);
+            await _productWriteRepository.SaveAsync();
+
+            return new();
         }
     }
 }

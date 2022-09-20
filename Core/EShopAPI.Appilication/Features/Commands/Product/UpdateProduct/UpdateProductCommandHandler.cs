@@ -6,25 +6,28 @@ namespace EShopAPI.Appilication.Features.Commands.Product.UpdateProduct
 {
     public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommandRequest, UpdateProductCommandResponse>
     {
-        readonly IProductWriteRepository productWriteRepository;
-        readonly IProductWriteRepository productWriteRepository;
+        readonly IProductWriteRepository _productWriteRepository;
+        readonly IProductReadRepository _productReadRepository;
 
-        public UpdateProductCommandHandler(IProductWriteRepository productWriteRepository)
+        public UpdateProductCommandHandler(
+            IProductWriteRepository productWriteRepository,
+            IProductReadRepository productReadRepository)
         {
-            this.productWriteRepository = productWriteRepository;
+            this._productWriteRepository = productWriteRepository;
+            this._productReadRepository = productReadRepository;
         }
 
         public async Task<UpdateProductCommandResponse> Handle
             (UpdateProductCommandRequest request, CancellationToken cancellationToken)
         {
-            P::Product product = await _productReadRepository.FindByIdAsync(model.Id);
-            product.Name = model.Name;
-            product.Stock = model.Stock;
-            product.Price = model.Price;
+            P::Product product = await _productReadRepository.FindByIdAsync(request.Id);
+            product.Name = request.Name;
+            product.Stock = request.Stock;
+            product.Price = request.Price;
             await _productWriteRepository.SaveAsync();
 
 
-            throw new NotImplementedException();
+            return new();
         }
     }
 }

@@ -1,9 +1,5 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using P=EShopAPI.Domain.Entities;
 
 namespace EShopAPI.Appilication.Features.Commands.ProductImageFile.UploadProductImage
 {
@@ -11,6 +7,20 @@ namespace EShopAPI.Appilication.Features.Commands.ProductImageFile.UploadProduct
     {
         public async Task<UploadProductImageCommandResponse> Handle(UploadProductImageCommandRequest request, CancellationToken cancellationToken)
         {
+            List<(string fileName, string pathOrContainerName)> result = await _storageService.UploadAsync("photo-images", Request.Form.Files);
+            P.Product product = await _productReadRepository.FindByIdAsync(id);
+
+            await _productImageWrite.AddRangeAsync(result.Select(r => new ProductImageFile
+            {
+                FileName = r.fileName,
+                Path = r.pathOrContainerName,
+                Storage = _storageService.StorageName,
+                Products = new List<Product>() { product }
+            }).ToList());
+
+            await _productImageWrite.SaveAsync();
+
+
             throw new NotImplementedException();
         }
     }
