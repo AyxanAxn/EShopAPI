@@ -1,3 +1,4 @@
+using EShopAPI.Appilication;
 using EShopAPI.Appilication.Validators.Products;
 using EShopAPI.Infrastructure;
 using EShopAPI.Infrastructure.Enums;
@@ -11,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddPersistanceServices();
 builder.Services.AddInfrastructureServices();
+builder.Services.AddAppilicationService();
 //You can change your storae dynamicly from hire!
 //builder.Services.AddStorage<LocalStorage>();
 builder.Services.AddStorage<AzureStorage>();

@@ -1,8 +1,11 @@
 ﻿using EShopAPI.Appilication.Abstractions.Storage;
+using EShopAPI.Appilication.Features.Commands.CreateProduct;
+using EShopAPI.Appilication.Features.Queries.GetAllProduct;
 using EShopAPI.Appilication.IRepositories;
 using EShopAPI.Appilication.RequestParameters;
 using EShopAPI.Appilication.ViewModels;
 using EShopAPI.Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -13,8 +16,8 @@ namespace EShopAPI.API.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        readonly private IProductWriteRepository _productWriteRepository;
-        readonly private IProductReadRepository _productReadRepository;
+        private readonly IProductWriteRepository _productWriteRepository;
+        private readonly IProductReadRepository _productReadRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IFileReadRepository _fileRead;
         private readonly IFileWriteRepository _fileWrite;
@@ -22,9 +25,13 @@ namespace EShopAPI.API.Controllers
         private readonly IProductImageFileWriteRepository _productImageWrite;
         private readonly IInvoiceFileReadRepository _invoiceRead;
         private readonly IInvoiceFileWriteRepository _invoiceWrite;
-        readonly IStorageService _storageService;
-        readonly IConfiguration _configuration;
+        private readonly IStorageService _storageService;
+        private readonly IConfiguration _configuration;
 
+
+
+
+        readonly IMediator _mediator;
         public ProductsController(
 
             IProductWriteRepository productWriteRepository,
@@ -37,7 +44,8 @@ namespace EShopAPI.API.Controllers
             IInvoiceFileReadRepository invoiceRead,
             IInvoiceFileWriteRepository invoiceWrite,
             IStorageService storageService,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IMediator mediator)
         {
             this._productWriteRepository = productWriteRepository;
             this._productReadRepository = productReadRepository;
@@ -50,27 +58,14 @@ namespace EShopAPI.API.Controllers
             this._invoiceWrite = invoiceWrite;
             this._storageService = storageService;
             this._configuration = configuration;
+            this._mediator=mediator;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] Pagination pagination)
+        public async Task<IActionResult> Get([FromQuery] GetAllProductQueryRequest getAllProductQueryRequest)
         {
-            var totalProductCount = _productReadRepository.GetAll(false).Count();
-            var products = _productReadRepository.GetAll(false).Select(p => new
-            {
-                p.Id,
-                p.Name,
-                p.Stock,
-                p.Price,
-                p.CreatedDate,
-                p.UpdatedDate
-            }).Skip(pagination.Page * pagination.Size).Take(pagination.Size).ToList();
-
-            return Ok(new
-            {
-                totalProductCount,
-                products
-            });
+            GetAllProductQueryResponse response=  await _mediator.Send(getAllProductQueryRequest);
+            return Ok(response);  
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)
@@ -78,20 +73,10 @@ namespace EShopAPI.API.Controllers
             return Ok(await _productReadRepository.FindByIdAsync(id, false));
         }
         [HttpPost]
-        public async Task<IActionResult> Post(VM_Create_Products model)
+        public async Task<IActionResult> Post(CreateProductCommandRequest createProductCommandRequest)
         {
-            if (ModelState.IsValid)
-            {
-                await _productWriteRepository.AddAsync(new()
-                {
-                    Name = model.Name,
-                    Price = model.Price,
-                    Stock = model.Stock
-                });
-                await _productWriteRepository.SaveAsync();
-                return StatusCode((int)HttpStatusCode.Created);
-            }
-            return BadRequest();
+            CraeteProductCommandResponse response= await _mediator.Send(createProductCommandRequest);
+            return StatusCode((int)HttpStatusCode.Created); 
         }
         [HttpPut]
         public async Task<IActionResult> Put(VM_Update_Product model)
