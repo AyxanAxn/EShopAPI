@@ -1,14 +1,9 @@
-﻿using EShopAPI.Appilication.ViewModels;
+﻿using EShopAPI.Appilication.Features.Commands.Product.CreateProduct;
 using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EShopAPI.Appilication.Validators.Products
 {
-    public class CreateProductValidator : AbstractValidator<VM_Create_Products>
+    public class CreateProductValidator : AbstractValidator<CreateProductCommandRequest>
     {
         public CreateProductValidator()
         {
