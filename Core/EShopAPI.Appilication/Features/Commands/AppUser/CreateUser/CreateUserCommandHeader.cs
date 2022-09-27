@@ -17,10 +17,12 @@ namespace EShopAPI.Appilication.Features.Commands.AppUser.CreateUser
         {
             IdentityResult result = await _userManager.CreateAsync(new()
             {
+                Id = Guid.NewGuid().ToString(),   
                 UserName = request.username,
                 Email = request.email,
                 NameSurname = request.nameSurname
             }, request.password);
+
             CreateUserCommandResponse response = new() { Succeeded=result.Succeeded};
 
             if (result.Succeeded)
@@ -28,11 +30,9 @@ namespace EShopAPI.Appilication.Features.Commands.AppUser.CreateUser
             
             else
                 foreach (var error in result.Errors)
-                    response.Message += $"{error.Code} - {error.Description}";
+                    response.Message += $"{error.Code} - {error.Description}\n";
 
             return response;
-
-            //throw new UserCreateFailedException();
         }
     }
 }

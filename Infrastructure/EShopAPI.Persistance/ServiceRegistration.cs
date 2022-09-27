@@ -11,7 +11,15 @@ namespace EShopAPI.Persistance
     {
         public static void AddPersistanceServices(this IServiceCollection services)
         {
-            services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<EShopAPIDbContext>();
+            services.AddIdentity<AppUser, AppRole>(options => {
+                options.Password.RequiredLength = 4;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+            }).AddEntityFrameworkStores<EShopAPIDbContext>();
+
+
             services.AddDbContext<EShopAPIDbContext>(options => options.UseNpgsql(Configuration.ConnectionString));
             services.AddScoped<ICostumerReadRepository, CostumerReadRepository>();
             services.AddScoped<ICostumerWriteRepository, CostumerWriteRepository>();
