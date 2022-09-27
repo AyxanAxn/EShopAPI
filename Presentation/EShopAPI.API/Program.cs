@@ -14,8 +14,8 @@ builder.Services.AddPersistanceServices();
 builder.Services.AddInfrastructureServices();
 builder.Services.AddAppilicationService();
 //You can change your storae dynamicly from hire!
-//builder.Services.AddStorage<LocalStorage>();
-builder.Services.AddStorage<AzureStorage>();
+builder.Services.AddStorage<LocalStorage>();
+//builder.Services.AddStorage<AzureStorage>();
 //Heyyy
 
 //Cors policy

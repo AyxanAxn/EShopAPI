@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using EShopAPI.Persistance.Repositories;
 using EShopAPI.Appilication.IRepositories;
+using EShopAPI.Domain.Entities.Identity;
 
 namespace EShopAPI.Persistance
 {
@@ -10,6 +11,7 @@ namespace EShopAPI.Persistance
     {
         public static void AddPersistanceServices(this IServiceCollection services)
         {
+            services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<EShopAPIDbContext>();
             services.AddDbContext<EShopAPIDbContext>(options => options.UseNpgsql(Configuration.ConnectionString));
             services.AddScoped<ICostumerReadRepository, CostumerReadRepository>();
             services.AddScoped<ICostumerWriteRepository, CostumerWriteRepository>();

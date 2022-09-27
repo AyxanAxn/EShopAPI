@@ -4,7 +4,7 @@
 
 namespace EShopAPI.Persistance.Migrations
 {
-    public partial class mig11 : Migration
+    public partial class mig_2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
