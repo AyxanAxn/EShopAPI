@@ -1,7 +1,6 @@
 using EShopAPI.Appilication;
 using EShopAPI.Appilication.Validators.Products;
 using EShopAPI.Infrastructure;
-using EShopAPI.Infrastructure.Enums;
 using EShopAPI.Infrastructure.Filters;
 using EShopAPI.Infrastructure.Services.Storage.Azure;
 using EShopAPI.Infrastructure.Services.Storage.Local;
@@ -50,6 +49,8 @@ app.UseCors();
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

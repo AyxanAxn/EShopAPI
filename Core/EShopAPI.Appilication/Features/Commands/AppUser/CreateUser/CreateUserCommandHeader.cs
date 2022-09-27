@@ -1,7 +1,7 @@
-﻿using EShopAPI.Appilication.Exceptions;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using U = EShopAPI.Domain.Entities.Identity;
+
 namespace EShopAPI.Appilication.Features.Commands.AppUser.CreateUser
 {
     public class CreateUserCommandHeader : IRequestHandler<CreateUserCommandRequest, CreateUserCommandResponse>
@@ -12,7 +12,6 @@ namespace EShopAPI.Appilication.Features.Commands.AppUser.CreateUser
         {
             _userManager = userManager;
         }
-
         public async Task<CreateUserCommandResponse> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
         {
             IdentityResult result = await _userManager.CreateAsync(new()
