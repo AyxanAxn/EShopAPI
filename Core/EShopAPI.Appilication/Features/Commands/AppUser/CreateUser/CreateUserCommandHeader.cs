@@ -21,18 +21,18 @@ namespace EShopAPI.Appilication.Features.Commands.AppUser.CreateUser
                 Email = request.email,
                 NameSurname = request.nameSurname
             }, request.password);
+            CreateUserCommandResponse response = new() { Succeeded=result.Succeeded};
 
             if (result.Succeeded)
-            {
-                return new()
-                {
-                    Succeeded = true,
-                    Message = "User created successufully"
-                };
-            }
+                response.Message = "User created successufully";
             
+            else
+                foreach (var error in result.Errors)
+                    response.Message += $"{error.Code} - {error.Description}";
 
-            throw new UserCreateFailedException();
+            return response;
+
+            //throw new UserCreateFailedException();
         }
     }
 }

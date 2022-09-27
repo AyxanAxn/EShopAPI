@@ -14,7 +14,7 @@ namespace EShopAPI.API.Controllers
             _mediator = mediator;
         }
 
-
+        [HttpPost]
         public async Task<IActionResult> CreateUser(CreateUserCommandRequest createUserCommandRequest)
         {
             CreateUserCommandResponse response = await _mediator.Send(createUserCommandRequest);
