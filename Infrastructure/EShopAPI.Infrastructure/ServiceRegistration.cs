@@ -1,8 +1,10 @@
 ﻿using EShopAPI.Appilication.Abstractions.Storage;
+using EShopAPI.Appilication.Abstractions.Token;
 using EShopAPI.Infrastructure.Enums;
 using EShopAPI.Infrastructure.Services.Storage;
 using EShopAPI.Infrastructure.Services.Storage.Azure;
 using EShopAPI.Infrastructure.Services.Storage.Local;
+using EShopAPI.Infrastructure.Services.Token;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EShopAPI.Infrastructure
@@ -19,6 +21,7 @@ namespace EShopAPI.Infrastructure
         {
 
             serviceCollection.AddScoped<IStorage, T>();
+            serviceCollection.AddScoped<ITokenHandler, TokenHandler>();
         }
 
         public static void AddStorage<T>(this IServiceCollection serviceCollection,StorageType storageType)
