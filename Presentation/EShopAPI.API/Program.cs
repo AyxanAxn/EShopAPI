@@ -6,6 +6,9 @@ using EShopAPI.Infrastructure.Services.Storage.Azure;
 using EShopAPI.Infrastructure.Services.Storage.Local;
 using EShopAPI.Persistance;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -38,6 +41,21 @@ builder.Services
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddAuthentication("Admin")
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new()
+        {
+            ValidateAudience = true, //Which origns will use this token
+            ValidateIssuer = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidAudience = builder.Configuration["Token : Audience"],
+            ValidIssuer = builder.Configuration["Token : Issuer"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(""))
+
+        };
+    });
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {

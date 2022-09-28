@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EShopAPI.Appilication.DTOs
+{
+    public class Token
+    {
+        public string AcccessToken { get; set; }
+        public DateTime Expiration{ get; set; }
+    }
+}
