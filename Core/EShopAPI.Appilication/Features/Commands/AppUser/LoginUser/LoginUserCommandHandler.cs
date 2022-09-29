@@ -38,7 +38,7 @@ namespace EShopAPI.Appilication.Features.Commands.AppUser.LoginUser
             if (result.Succeeded)
             {
                 Token token = _tokenHandler.CreateAccessToken(10);
-                return new LoginUserSuccessCommandResponse()
+                return new LoginUserCommandResponse()
                 {
                     Token = token
                 };

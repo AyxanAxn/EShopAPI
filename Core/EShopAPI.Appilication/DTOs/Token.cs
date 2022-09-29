@@ -8,7 +8,7 @@ namespace EShopAPI.Appilication.DTOs
 {
     public class Token
     {
-        public string AcccessToken { get; set; }
+        public string AccessToken { get; set; }
         public DateTime Expiration{ get; set; }
     }
 }

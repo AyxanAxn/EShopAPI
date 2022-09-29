@@ -36,7 +36,7 @@ namespace EShopAPI.Infrastructure.Services.Token
                     );
 
             JwtSecurityTokenHandler tokenHandler = new();
-            token.AcccessToken = tokenHandler.WriteToken(securityToken);
+            token.AccessToken = tokenHandler.WriteToken(securityToken);
 
             return token;
         }
