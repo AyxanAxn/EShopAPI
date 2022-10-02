@@ -10,7 +10,7 @@ namespace EShopAPI.Appilication.Features.Queries.Product.GetAllProduct
         {
             _productReadRepository = productReadRepository;
         }
-        public async Task<GetAllProductQueryResponse> Handle(GetAllProductQueryRequest request, 
+        public async Task<GetAllProductQueryResponse> Handle(GetAllProductQueryRequest request,
             CancellationToken cancellationToken)
         {
             var totalProductCount = _productReadRepository.GetAll(false).Count();
@@ -29,8 +29,8 @@ namespace EShopAPI.Appilication.Features.Queries.Product.GetAllProduct
 
             return new()
             {
-                Products=products,
-                TotalCount=totalProductCount
+                Products = products,
+                TotalCount = totalProductCount
             };
         }
     }

@@ -24,7 +24,7 @@ namespace EShopAPI.Infrastructure
             serviceCollection.AddScoped<ITokenHandler, TokenHandler>();
         }
 
-        public static void AddStorage<T>(this IServiceCollection serviceCollection,StorageType storageType)
+        public static void AddStorage<T>(this IServiceCollection serviceCollection, StorageType storageType)
         {
             switch (storageType)
             {

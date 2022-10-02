@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EShopAPI.Appilication.Features.Commands.AppUser.GoogleLogin
 {
-    public class GoogleLoginCommandRequest:IRequest<GoogleLoginCommandResponse>
+    public class GoogleLoginCommandRequest : IRequest<GoogleLoginCommandResponse>
     {
         public string Id { get; set; }
         public string Name { get; set; }
