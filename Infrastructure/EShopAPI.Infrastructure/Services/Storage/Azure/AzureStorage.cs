@@ -3,7 +3,6 @@ using Azure.Storage.Blobs.Models;
 using EShopAPI.Appilication.Azure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using System.Threading.Tasks;
 
 namespace EShopAPI.Infrastructure.Services.Storage.Azure
 {
